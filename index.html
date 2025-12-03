@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторная работа - CDN Cloudflare</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛡️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Лабораторная работа по настройке CDN</h1>
+            <h2>Группа: AGGSMG1 | Студент: [Ваше ФИО]</h2>
+        </header>
+        
+        <main>
+            <section class="info">
+                <h3>🔄 Этапы выполнения:</h3>
+                <ol>
+                    <li>Настройка Origin-сервера (GitHub Pages)</li>
+                    <li>Подключение CDN Cloudflare</li>
+                    <li>Тестирование кэширования</li>
+                    <li>Настройка защиты WAF</li>
+                    <li>Анализ трафика</li>
+                </ol>
+            </section>
+            
+            <section class="cdn-test">
+                <h3>🌐 Тест CDN Cloudflare</h3>
+                <p>Этот контент доставляется через глобальную сеть Cloudflare.</p>
+                <p>Статус кэширования: <span id="cache-status">Проверка...</span></p>
+                <button onclick="checkCache()">Проверить кэш</button>
+            </section>
+            
+            <section class="image-section">
+                <h3>🖼️ Тестовое изображение</h3>
+                <p>Это изображение будет кэшироваться CDN:</p>
+                <img src="https://raw.githubusercontent.com/madara1/madara1.github.io/main/image.jpg" alt="Тестовое изображение CDN" id="cdn-image">
+                <p class="image-info">Загрузка изображения через CDN...</p>
+            </section>
+            
+            <section class="api-test">
+                <h3>⚡ Тест динамического контента</h3>
+                <button onclick="testAPI()">Тест API (задержка 1 сек)</button>
+                <div id="api-result"></div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>© 2023 Лабораторная работа по CDN | Origin: GitHub Pages | CDN: Cloudflare</p>
+        </footer>
+    </div>
+
+    <script>
+        function checkCache() {
+            const status = document.getElementById('cache-status');
+            const now = new Date();
+            status.innerHTML = `Проверено: ${now.toLocaleTimeString()}<br>Обновите страницу для проверки cf-cache-status в Network`;
+            status.style.color = 'green';
+        }
+        
+        function testAPI() {
+            const result = document.getElementById('api-result');
+            result.innerHTML = '⏳ Запрос к API...';
+            
+            // Имитация запроса к API
+            setTimeout(() => {
+                const time = new Date().toLocaleTimeString();
+                result.innerHTML = `✅ Ответ получен: ${time}<br>Время обработки: 1000мс`;
+                result.style.color = 'blue';
+            }, 1000);
+        }
+        
+        // Автопроверка при загрузке
+        window.onload = function() {
+            const img = document.getElementById('cdn-image');
+            const info = document.querySelector('.image-info');
+            
+            img.onload = function() {
+                info.innerHTML = `✅ Изображение загружено (${img.naturalWidth}x${img.naturalHeight})`;
+                info.style.color = 'green';
+            };
+            
+            img.onerror = function() {
+                info.innerHTML = '❌ Ошибка загрузки изображения';
+                info.style.color = 'red';
+            };
+        };
+    </script>
+</body>
+</html>
